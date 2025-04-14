@@ -57,7 +57,7 @@ int update(mat & H, const mat & Wt, const mat & A, const umat & mask,
 
 int update_with_missing(mat & H, const mat & Wt, const mat & A, const umat & mask,
 	const vec & beta, unsigned int max_iter, double rel_tol, int n_threads, int method,
-    double threshold = datum::inf, double lambda_penalty = 0)
+    double threshold , double lambda_penalty)
 {
 	// A = W H, solve H
 	// With missings in A, Wt = W^T
