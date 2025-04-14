@@ -56,11 +56,14 @@ int update(mat & H, const mat & Wt, const mat & A, const umat & mask,
 
 
 int update_with_missing(mat & H, const mat & Wt, const mat & A, const umat & mask,
-	const vec & beta, unsigned int max_iter, double rel_tol, int n_threads, int method)
+	const vec & beta, unsigned int max_iter, double rel_tol, int n_threads, int method,
+    double threshold = datum::inf, double lambda_penalty = 0)
 {
 	// A = W H, solve H
 	// With missings in A, Wt = W^T
 	// method: 1 = scd, 2 = lee_ls, 3 = scd_kl, 4 = lee_kl
+	// threshold: max value allowed for imputed predictions
+	// lambda_penalty: strength of soft constraint penalty
 
 	unsigned int n = A.n_rows, m = A.n_cols;
 	unsigned int total_raw_iter = 0;
@@ -86,7 +89,6 @@ int update_with_missing(mat & H, const mat & Wt, const mat & A, const umat & mas
 		{
 			if (any_missing)
 			{
-				//non_missing.print("Non Missing");
 				WtW = Wt.cols(non_missing)*Wt.cols(non_missing).t();
 				mu = Wt.cols(non_missing) * A.elem(j*n + non_missing);
 			}
@@ -100,7 +102,7 @@ int update_with_missing(mat & H, const mat & Wt, const mat & A, const umat & mas
 			if (beta(1) != 0)
 				WtW += beta(1);
 
-			WtW.diag() += TINY_NUM; // for stability: avoid divided by 0 in scd_ls, scd_kl
+			WtW.diag() += TINY_NUM; // for stability
 		}
 
 		int iter = 0;
@@ -109,6 +111,25 @@ int update_with_missing(mat & H, const mat & Wt, const mat & A, const umat & mas
 			mu = WtW*H.col(j)-mu;
 			if (beta(2) != 0)
 				mu += beta(2);
+
+			// Soft constraint on missing values
+			if (any_missing && lambda_penalty > 0 && std::isfinite(threshold))
+			{
+				// Reconstruct predicted column
+				vec pred = Wt.t() * H.col(j);
+				for (unsigned int i = 0; i < n; ++i)
+				{
+					if (!std::isfinite(A(i, j))) // missing
+					{
+						if (pred(i) > threshold)
+						{
+							vec penalty = lambda_penalty * (pred(i) - threshold) * Wt.col(i);
+							mu += penalty;
+						}
+					}
+				}
+			}
+
 			iter = scd_ls_update(H.col(j), WtW, mu, mask.col(j), max_iter, rel_tol);
 		}
 		else if (method == 2)
