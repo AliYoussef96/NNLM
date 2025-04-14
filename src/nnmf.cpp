@@ -1,10 +1,10 @@
 #include "nnlm.h"
 
 //[[Rcpp::export]]
-Rcpp::List c_nnmf(const arma::mat & A, const unsigned int k, arma::mat W, arma::mat H, arma::umat Wm, arma::umat Hm,
-	const arma::vec & alpha, const arma::vec & beta, const unsigned int max_iter, const double rel_tol,
-	const int n_threads, const int verbose, const bool show_warning, const unsigned int inner_max_iter,
-	const double inner_rel_tol, const int method, unsigned int trace)
+int c_nnmf(mat & H, const mat & W, const mat & A, const umat & mask, const vec & beta,
+	const unsigned int max_iter, const double rel_tol, const int n_threads, const int method,
+    double threshold = datum::inf, double lambda_penalty = 0)
+
 {
 	/******************************************************************************************************
 	 *              Non-negative Matrix Factorization(NNMF) using alternating scheme
@@ -113,10 +113,11 @@ Rcpp::List c_nnmf(const arma::mat & A, const unsigned int k, arma::mat W, arma::
 
 		if (any_missing)
 		{
-			// update W
-			total_raw_iter += update_with_missing(W, H, A.t(), Wm, alpha, inner_max_iter, inner_rel_tol, n_threads, method);
-			// update H
-			total_raw_iter += update_with_missing(H, W, A, Hm, beta, inner_max_iter, inner_rel_tol, n_threads, method);
+		// update W
+		total_raw_iter += update_with_missing(W, H, A.t(), Wm, alpha, inner_max_iter, inner_rel_tol, n_threads, method, threshold, lambda_penalty);
+		
+		// update H
+		total_raw_iter += update_with_missing(H, W, A, Hm, beta, inner_max_iter, inner_rel_tol, n_threads, method, threshold, lambda_penalty);
 
 			if (i % trace == 0)
 			{
