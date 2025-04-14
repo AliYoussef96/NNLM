@@ -4,7 +4,7 @@
 Rcpp::List c_nnmf(const arma::mat & A, const unsigned int k, arma::mat W, arma::mat H, arma::umat Wm, arma::umat Hm,
 	const arma::vec & alpha, const arma::vec & beta, const unsigned int max_iter, const double rel_tol,
 	const int n_threads, const int verbose, const bool show_warning, const unsigned int inner_max_iter,
-	const double inner_rel_tol, const int method, unsigned int trace, double threshold = datum::inf, double lambda_penalty = 0)
+	const double inner_rel_tol, const int method, unsigned int trace, double threshold, double lambda_penalty)
 
 {
 	/******************************************************************************************************
@@ -45,7 +45,7 @@ Rcpp::List c_nnmf(const arma::mat & A, const unsigned int k, arma::mat W, arma::
 	 * Version:
 	 * 	2015-12-11
 	 ******************************************************************************************************/
-
+	
 	unsigned int n = A.n_rows;
 	unsigned int m = A.n_cols;
 	//int k = H.n_rows; // decomposition rank k
