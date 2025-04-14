@@ -137,7 +137,7 @@ nnmf <- function(
 	loss = c('mse', 'mkl'), init = NULL, mask = NULL, W.norm = -1L, check.k = TRUE,
 	max.iter = 500L, rel.tol = 1e-4, n.threads = 1L, trace = 100/inner.max.iter,
 	verbose = 1L, show.warning = TRUE, inner.max.iter = ifelse('mse' == loss, 50L, 1L),
-	inner.rel.tol = 1e-9
+	inner.rel.tol = 1e-9 , threshold = Inf, lambda_penalty = 0,
 	) {
 	method <- match.arg(method);
 	loss <- match.arg(loss);
@@ -179,7 +179,7 @@ nnmf <- function(
 			alpha, beta, as.integer(max.iter), as.double(rel.tol),
 			as.integer(n.threads), as.integer(verbose), as.logical(show.warning),
 			as.integer(inner.max.iter), as.double(inner.rel.tol), as.integer(method.code),
-			as.integer(trace))
+			as.integer(trace)) , threshold = threshold, lambda_penalty = lambda_penalty
 		);
 	names(out) <- c('W', 'H', 'mse', 'mkl', 'target.loss', 'average.epochs', 'n.iteration');
 	out$mse <- as.vector(out$mse);
