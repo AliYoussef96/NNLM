@@ -10,7 +10,7 @@ This is a package for Nonnegative Linear Models (NNLM). It implements fast seque
 
 ```r
 library(devtools)
-install_github('linxihui/NNLM')
+install_github('AliYoussef96/NNLM')
 
 
 # get a release version from CRAN
