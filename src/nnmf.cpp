@@ -1,9 +1,10 @@
 #include "nnlm.h"
 
 //[[Rcpp::export]]
-int c_nnmf(mat & H, const mat & W, const mat & A, const umat & mask, const vec & beta,
-	const unsigned int max_iter, const double rel_tol, const int n_threads, const int method,
-    double threshold = datum::inf, double lambda_penalty = 0)
+Rcpp::List c_nnmf(const arma::mat & A, const unsigned int k, arma::mat W, arma::mat H, arma::umat Wm, arma::umat Hm,
+	const arma::vec & alpha, const arma::vec & beta, const unsigned int max_iter, const double rel_tol,
+	const int n_threads, const int verbose, const bool show_warning, const unsigned int inner_max_iter,
+	const double inner_rel_tol, const int method, unsigned int trace, double threshold = datum::inf, double lambda_penalty = 0)
 
 {
 	/******************************************************************************************************
