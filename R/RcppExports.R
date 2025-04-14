@@ -5,7 +5,7 @@ c_nnlm <- function(x, y, alpha, mask, beta0, max_iter, rel_tol, n_threads, metho
     .Call(`_NNLM_c_nnlm`, x, y, alpha, mask, beta0, max_iter, rel_tol, n_threads, method)
 }
 
-c_nnmf <- function(A, k, W, H, Wm, Hm, alpha, beta, max_iter, rel_tol, n_threads, verbose, show_warning, inner_max_iter, inner_rel_tol, method, trace) {
-    .Call(`_NNLM_c_nnmf`, A, k, W, H, Wm, Hm, alpha, beta, max_iter, rel_tol, n_threads, verbose, show_warning, inner_max_iter, inner_rel_tol, method, trace)
+c_nnmf <- function(A, k, W, H, Wm, Hm, alpha, beta, max_iter, rel_tol, n_threads, verbose, show_warning, inner_max_iter, inner_rel_tol, method, trace, threshold, lambda_penalty) {
+    .Call(`_NNLM_c_nnmf`, A, k, W, H, Wm, Hm, alpha, beta, max_iter, rel_tol, n_threads, verbose, show_warning, inner_max_iter, inner_rel_tol, method, trace, threshold, lambda_penalty)
 }
 
